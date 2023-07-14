@@ -14,7 +14,7 @@ app.get('/', (_request, response) => {
 app.use(express.json());
 
 app.use('/login', LoginRouter);
-app.use('/user', UserRouter);
+app.use(UserRouter);
 
 // ...
 

@@ -8,25 +8,22 @@ const checkTokenExists = (req, res, next) => {
     next();
 };
 
-const checkTokenFormat = (req, res, next) => {
-    const parts = req.headers.authorization.split(' ');
-
-    if (parts.length !== 2) {
-        return res.status(200).json({ message: 'Token malformatted' });
-    }
-    next();
-};
-
 const verifyToken = (req, res, next) => {
-    const [, token] = req.headers.authorization.split(' ');
-
-    try { 
-        const payload = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = payload;
-        next();
-    } catch (_err) {
-        return res.status(401).json({ message: 'Expired or invalid token' });
+    const { authorization } = req.headers;
+    
+    if (!authorization || !authorization.startsWith('Bearer ')) {
+      return res.status(401).json({ message: 'Expired or invalid token' });
     }
-};
+    
+    const token = authorization.slice(7);
+    try {
+      const secret = process.env.JWT_SECRET || 'secretJWT';
+      const payload = jwt.verify(token, secret);
+      req.user = payload;
+      next();
+    } catch (error) {
+      return res.status(401).json({ message: 'Expired or invalid token' });
+    }
+  };
 
-module.exports = { checkTokenExists, checkTokenFormat, verifyToken };
+module.exports = { checkTokenExists, verifyToken };
