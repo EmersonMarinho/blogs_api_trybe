@@ -28,13 +28,13 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
         }
     }, {
-        tableName: 'BlogPosts',
+        tableName: 'blog_posts',
         timestamps: false,
         underscored: true,
     });
     BlogPost.associate = (models) => {
         BlogPost.belongsTo(models.User, {
-            foreignKey: 'userId',
+            foreignKey: 'user_id',
             as: 'user',
         });
     }
